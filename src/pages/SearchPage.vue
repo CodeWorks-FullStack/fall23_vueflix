@@ -14,6 +14,7 @@
         </form>
       </div>
     </section>
+    <PaginationComponent />
     <section class="row">
       <div v-for="movie in movies" :key="movie.id" class="col-md-4 p-4">
         <MovieCard :movieProp="movie" />
@@ -24,16 +25,20 @@
 
 
 <script>
-import { computed, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import Pop from '../utils/Pop.js';
 import { moviesService } from '../services/MoviesService.js';
 import { logger } from '../utils/Logger.js';
 import { AppState } from '../AppState.js'
 import MovieCard from '../components/MovieCard.vue';
+import PaginationComponent from '../components/PaginationComponent.vue';
 
 export default {
   setup() {
     const editable = ref('');
+    onMounted(() => {
+      moviesService.clearData()
+    })
     return {
       editable,
       movies: computed(() => AppState.movies),
@@ -49,7 +54,7 @@ export default {
       }
     };
   },
-  components: { MovieCard }
+  components: { MovieCard, PaginationComponent }
 }
 </script>
 

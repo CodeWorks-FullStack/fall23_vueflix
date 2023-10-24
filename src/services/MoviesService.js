@@ -22,16 +22,23 @@ class MoviesService {
     AppState.movies = newMovies
     AppState.currentPage = res.data.page
     AppState.totalPages = res.data.total_pages
-
   }
 
   async getMoviesWithSearchQuery(searchQuery) {
     const res = await movieApi.get(`search/movie?query=${searchQuery}`)
     logger.log('GET MOVIES WITH SEARCH', res.data)
+
+    AppState.searchQuery = searchQuery
     const newMovies = res.data.results.map(pojo => new Movie(pojo))
     AppState.movies = newMovies
     AppState.currentPage = res.data.page
     AppState.totalPages = res.data.total_pages
+  }
+
+  clearData() {
+    AppState.movies = []
+    AppState.currentPage = 0
+    AppState.totalPages = 0
   }
 }
 
