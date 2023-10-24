@@ -15,8 +15,8 @@ class MoviesService {
     AppState.totalPages = res.data.total_pages
   }
 
-  async changePageOfMovies(pageNumber) {
-    const res = await movieApi.get(`discover/movie?page=${pageNumber}`)
+  async changePageOfMovies(endpointUrl) {
+    const res = await movieApi.get(endpointUrl)
     logger.log('GOT MOVIES', res.data)
     const newMovies = res.data.results.map(pojo => new Movie(pojo))
     AppState.movies = newMovies
@@ -39,6 +39,7 @@ class MoviesService {
     AppState.movies = []
     AppState.currentPage = 0
     AppState.totalPages = 0
+    AppState.searchQuery = ''
   }
 }
 

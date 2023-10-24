@@ -1,8 +1,10 @@
 <template>
   <section v-if="totalPages > 0" class="row align-items-center">
     <div class="col-5">
-      <button :disabled="currentPage <= 1" @click="changePageOfMovies(currentPage - 1)"
+      <button v-if="searchQuery == ''" :disabled="currentPage <= 1" @click="changePageOfMovies(currentPage - 1)"
         class="btn btn-outline-dark fs-2">Previous Page <i class="mdi mdi-page-previous-outline"></i></button>
+      <button v-else :disabled="currentPage <= 1" @click="changePageOfMoviesWithSearchQuery(currentPage - 1)"
+        class="btn btn-outline-success fs-2">Previous Page <i class="mdi mdi-page-previous-outline"></i></button>
     </div>
     <div class="col-2 text-center fs-3">
       <p>
@@ -10,8 +12,10 @@
       </p>
     </div>
     <div class="col-5 text-end">
-      <button :disabled="currentPage == totalPages" @click="changePageOfMovies(currentPage + 1)"
+      <button v-if="searchQuery == ''" :disabled="currentPage == totalPages" @click="changePageOfMovies(currentPage + 1)"
         class="btn btn-outline-dark fs-2">Next Page <i class="mdi mdi-page-next-outline"></i></button>
+      <button v-else :disabled="currentPage == totalPages" @click="changePageOfMoviesWithSearchQuery(currentPage + 1)"
+        class="btn btn-outline-success fs-2">Next Page <i class="mdi mdi-page-next-outline"></i></button>
     </div>
   </section>
 </template>
@@ -28,17 +32,21 @@ export default {
     return {
       currentPage: computed(() => AppState.currentPage),
       totalPages: computed(() => AppState.totalPages),
+      searchQuery: computed(() => AppState.searchQuery),
       async changePageOfMovies(pageNumber) {
         try {
-          await moviesService.changePageOfMovies(pageNumber);
+          const endpointUrl = `discover/movie?page=${pageNumber}`
+          await moviesService.changePageOfMovies(endpointUrl);
         }
         catch (error) {
           Pop.error(error);
         }
       },
-      async changePageOfMoviesWithSearchQuery() {
+      async changePageOfMoviesWithSearchQuery(pageNumber) {
         try {
-          await moviesService.changePageOfMovies()
+          const searchQuery = AppState.searchQuery
+          const endpointUrl = `search/movie?page=${pageNumber}&query=${searchQuery}`
+          await moviesService.changePageOfMovies(endpointUrl)
         } catch (error) {
           Pop.error(error);
         }
